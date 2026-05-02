@@ -97,6 +97,42 @@ const reviews = [
     initial: "W",
     name: "王女士",
     meta: "萨摩耶主人"
+  },
+  {
+    body: "预约前会先问清楚过敏史和性格，到了店里也没有催我们。洗完还把毛结位置标出来，回家护理更有方向。",
+    initial: "Z",
+    name: "赵女士",
+    meta: "布偶猫主人"
+  },
+  {
+    body: "以前洗澡总是很抗拒，这次美容师一直轻声安抚，还把吹风时间拆开。第二次来明显没那么紧张了。",
+    initial: "H",
+    name: "何先生",
+    meta: "柴犬主人"
+  },
+  {
+    body: "店里味道很清爽，猫狗分时段安排让我放心。洗护结束后毛发顺了很多，指甲也修得很圆滑。",
+    initial: "M",
+    name: "马女士",
+    meta: "暹罗猫主人"
+  },
+  {
+    body: "老年犬腿脚不太好，工作人员会配合它的节奏，没有硬抱硬拉。护理后还提醒了关节和皮肤要注意的地方。",
+    initial: "S",
+    name: "孙先生",
+    meta: "金毛主人"
+  },
+  {
+    body: "造型沟通得很细，会先确认想保留的长度。最后修出来清爽但不夸张，很适合夏天日常打理。",
+    initial: "Q",
+    name: "钱女士",
+    meta: "泰迪主人"
+  },
+  {
+    body: "临走前会把耳道、脚垫和皮肤状态都说一遍，不只是洗干净。小细节很多，感觉是真的懂宠物。",
+    initial: "Y",
+    name: "杨先生",
+    meta: "柯基主人"
   }
 ];
 
@@ -274,6 +310,106 @@ function Carousel() {
             onClick={() => setCurrent(index)}
           />
         ))}
+      </div>
+    </div>
+  );
+}
+
+function ReviewCarousel() {
+  const reviewPages = Array.from({ length: Math.ceil(reviews.length / 3) }, (_, index) =>
+    reviews.slice(index * 3, index * 3 + 3)
+  );
+  const [current, setCurrent] = useState(0);
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setCurrent((index) => (index + 1) % reviewPages.length);
+    }, 4800);
+
+    return () => window.clearInterval(timer);
+  }, [reviewPages.length]);
+
+  const goToPrevious = () => {
+    setCurrent((index) => (index - 1 + reviewPages.length) % reviewPages.length);
+  };
+
+  const goToNext = () => {
+    setCurrent((index) => (index + 1) % reviewPages.length);
+  };
+
+  return (
+    <div className="relative" role="region" aria-label="客户评价轮播">
+      <div className="relative min-h-[720px] overflow-hidden md:min-h-[270px]">
+        {reviewPages.map((page, pageIndex) => (
+          <div
+            key={page.map((review) => review.name).join("-")}
+            className={`absolute inset-0 grid grid-cols-1 gap-5 transition duration-700 ease-out md:grid-cols-3 ${
+              pageIndex === current
+                ? "translate-x-0 opacity-100"
+                : pageIndex < current
+                  ? "-translate-x-8 opacity-0"
+                  : "translate-x-8 opacity-0"
+            }`}
+            aria-hidden={pageIndex !== current}
+          >
+            {page.map((review) => (
+              <article key={review.name} className="flex min-h-[220px] flex-col rounded-lg border border-line bg-white p-6 shadow-card">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="text-lg text-gold" aria-label="五星评价">
+                    ★★★★★
+                  </div>
+                  <span className="rounded-full bg-[#fff0eb] px-2.5 py-1 text-xs font-extrabold text-coral-dark">
+                    真实反馈
+                  </span>
+                </div>
+                <p className="mt-4 flex-1 text-[15px] leading-7 text-muted">{review.body}</p>
+                <div className="mt-5 flex items-center gap-3 border-t border-line pt-4">
+                  <span className="grid h-[42px] w-[42px] place-items-center rounded-full bg-mint font-black text-mint-dark">
+                    {review.initial}
+                  </span>
+                  <div>
+                    <strong className="block">{review.name}</strong>
+                    <span className="text-[13px] text-muted">{review.meta}</span>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        ))}
+      </div>
+      <div className="mt-5 flex items-center justify-between gap-4">
+        <div className="flex gap-2" aria-label="选择评价页">
+          {reviewPages.map((page, index) => (
+            <button
+              key={page[0].name}
+              className={`h-2.5 rounded-full transition-all ${
+                index === current ? "w-8 bg-coral" : "w-2.5 bg-mint-dark/25 hover:bg-mint-dark/45"
+              }`}
+              type="button"
+              aria-label={`第 ${index + 1} 页评价`}
+              aria-pressed={index === current}
+              onClick={() => setCurrent(index)}
+            />
+          ))}
+        </div>
+        <div className="flex gap-2">
+          <button
+            className="grid h-10 w-10 place-items-center rounded-full border border-line bg-white font-black text-mint-dark shadow-card transition hover:-translate-y-0.5"
+            type="button"
+            aria-label="上一页评价"
+            onClick={goToPrevious}
+          >
+            ←
+          </button>
+          <button
+            className="grid h-10 w-10 place-items-center rounded-full border border-line bg-white font-black text-mint-dark shadow-card transition hover:-translate-y-0.5"
+            type="button"
+            aria-label="下一页评价"
+            onClick={goToNext}
+          >
+            →
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -502,24 +638,8 @@ export default function Home() {
 
         <section id="reviews" className="py-16 sm:py-20" aria-labelledby="reviews-title">
           <div className="mx-auto w-[min(1120px,calc(100%-32px))]">
-            <SectionHead id="reviews-title" title="附近宠物主的评价" body="我们更在意毛孩子愿不愿意下次再来。" />
-            <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
-              {reviews.map((review) => (
-                <article key={review.name} className="min-h-[210px] rounded-lg border border-line bg-white p-6 shadow-card">
-                  <div className="text-lg text-gold" aria-label="五星评价">
-                    ★★★★★
-                  </div>
-                  <p className="mt-3 text-[15px] text-muted">{review.body}</p>
-                  <div className="mt-5 flex items-center gap-3">
-                    <span className="grid h-[42px] w-[42px] place-items-center rounded-full bg-mint font-black text-mint-dark">{review.initial}</span>
-                    <div>
-                      <strong className="block">{review.name}</strong>
-                      <span className="text-[13px] text-muted">{review.meta}</span>
-                    </div>
-                  </div>
-                </article>
-              ))}
-            </div>
+            <SectionHead id="reviews-title" title="附近宠物主的评价" body="更多来自猫狗主人的真实反馈，自动轮播也可以手动切换。" />
+            <ReviewCarousel />
           </div>
         </section>
 
