@@ -161,7 +161,7 @@ const carouselImages = [
   "/images/warm-paws-dog-bath.png"
 ];
 
-const appointmentTimes = ["今天 10:30", "今天 14:00", "今天 17:30", "明天上午"];
+const appointmentTimes = ["明天 09:30", "今天 14:00", "今天 17:30", "明天上午"];
 
 function Icon({ name }: { name: string }) {
   const common = {
