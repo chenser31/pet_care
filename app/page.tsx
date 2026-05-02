@@ -125,6 +125,8 @@ const carouselImages = [
   "/images/warm-paws-dog-bath.png"
 ];
 
+const appointmentTimes = ["今天 10:30", "今天 14:00", "今天 17:30", "明天上午"];
+
 function Icon({ name }: { name: string }) {
   const common = {
     stroke: "currentColor",
@@ -278,6 +280,8 @@ function Carousel() {
 }
 
 export default function Home() {
+  const [preferredTime, setPreferredTime] = useState(appointmentTimes[0]);
+
   return (
     <>
       <header className="sticky top-0 z-20 border-b border-line/80 bg-paper/90 backdrop-blur">
@@ -339,6 +343,34 @@ export default function Home() {
                 <a className="inline-flex min-h-11 items-center justify-center rounded-lg border border-line bg-white px-5 font-bold text-mint-dark transition hover:-translate-y-0.5" href={`tel:${phoneNumber}`}>
                   拨打电话
                 </a>
+              </div>
+              <div className="mt-4 max-w-[650px] rounded-lg border border-line bg-white/75 p-4 shadow-[0_12px_30px_rgba(36,48,47,0.06)]">
+                <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+                  <label className="text-sm font-bold text-mint-dark" htmlFor="preferred-time">
+                    期望到店时间
+                  </label>
+                  <span className="text-xs text-muted">电话确认后为你保留时段</span>
+                </div>
+                <div id="preferred-time" className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4" role="group" aria-label="选择期望到店时间">
+                  {appointmentTimes.map((time) => {
+                    const selected = preferredTime === time;
+
+                    return (
+                      <button
+                        key={time}
+                        className={`min-h-10 rounded-lg border px-3 text-sm font-bold transition hover:-translate-y-0.5 ${
+                          selected ? "border-coral bg-coral text-white shadow-[0_10px_24px_rgba(233,133,111,0.22)]" : "border-line bg-white text-mint-dark"
+                        }`}
+                        type="button"
+                        aria-pressed={selected}
+                        onClick={() => setPreferredTime(time)}
+                      >
+                        {time}
+                      </button>
+                    );
+                  })}
+                </div>
+                <p className="mt-3 text-sm text-muted">已选择：{preferredTime} 到店，可在电话中调整猫犬分时段安排。</p>
               </div>
               <div className="mt-7 grid max-w-[650px] grid-cols-1 gap-3 sm:grid-cols-3">
                 {[
@@ -517,6 +549,7 @@ export default function Home() {
               <p className="mt-3 text-muted">告诉我们宠物的品种、年龄、体重、毛发状态和是否怕水怕风，我们会帮你安排合适的洗护时间。</p>
               <div className="my-6 grid gap-3.5">
                 <ContactRow icon="phone" title="138-0000-0000" body="电话预约更适合第一次到店" />
+                <ContactRow icon="clock" title={`期望到店：${preferredTime}`} body="如需更早或更晚，可电话沟通调整" />
                 <ContactRow icon="pin" title="城市中心宠物友好街区 88 号" body="近社区停车点，支持短暂停车接送" />
                 <ContactRow icon="clock" title="周一至周日 09:30-20:30" body="节假日营业时间以门店通知为准" />
               </div>
